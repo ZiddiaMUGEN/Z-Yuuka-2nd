@@ -1,0 +1,410 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; var(1) = used when unloading helpers
+;; var(2) = mugen version (0=1.0,1=1.1a4,2=1.1b1)
+;; var(3) = my player index
+;; var(4) = my state code address
+;; var(10) = self address
+;; var(11) = enemy(0) address
+;; var(12) = enemy(1) address
+;;
+
+[Info]
+name="Z-Yuuka"
+displayname="Kazami Yuuka"
+Author="Ziddia"
+mugenversion = 1.1
+[Files]
+cmd=Z-Yuuka 2nd.def
+cns=Z-Yuuka 2nd.def
+st=Supernull.st
+st0=Z-Yuuka 2nd.def
+st1=Yuuka-Kill.st
+sprite=Sys/Z-Yuuka.sff
+anim=Sys/Z-Yuuka.air
+sound=Sys/Z-Yuuka.snd
+
+[Data]
+life=1000
+power=3000
+attack=100
+defence=100
+fall.defence_up=100
+liedown.time=0
+airjuggle=15
+sparkno=-1
+guard.sparkno=-1
+KO.echo=0
+volume=255
+IntPersistIndex=60
+FloatPersistIndex=40
+[Size]
+xscale=1
+yscale=1
+ground.back=1
+ground.front=1
+air.back=1
+air.front=1
+height=1
+attack.dist=1
+proj.attack.dist=1
+proj.doscale=0
+head.pos=0,0
+mid.pos=0,0
+shadowoffset=0
+draw.offset=0,0
+[Velocity]
+walk.fwd=0
+walk.back=0
+run.fwd=0,0
+run.back=0,0
+jump.neu=0,0
+jump.back=0
+jump.fwd=0
+runjump.back=0,0
+runjump.fwd=0,0
+airjump.neu=0,0
+airjump.back=0
+airjump.fwd=0
+[Movement]
+airjump.num=0
+airjump.height=0
+yaccel=1
+stand.friction=1
+crouch.friction=1
+[Command]
+Name="a"
+Command=a
+Time=1
+[Command]
+Name="b"
+Command=b
+Time=1
+[Command]
+Name="c"
+Command=c
+Time=1
+[Command]
+Name="x"
+Command=x
+Time=1
+[Command]
+Name="y"
+Command=y
+Time=1
+[Command]
+Name="z"
+Command=z
+Time=1
+[Command]
+Name="start"
+Command=s
+Time=1
+[Command]
+Name="holdfwd"
+Command=/$F
+Time=1
+[Command]
+Name="holdback"
+Command=/$B
+Time=1
+[Command]
+Name="holdup"
+Command=/$U
+Time=1
+[Command]
+Name="holddown"
+Command=/$D
+Time=1
+[Command]
+Name="holda"
+Command=/$a
+Time=1
+[Command]
+Name="holdb"
+Command=/$b
+Time=1
+[Command]
+Name="holdc"
+Command=/$c
+Time=1
+[Command]
+Name="holdx"
+Command=/$x
+Time=1
+[Command]
+Name="holdy"
+Command=/$y
+Time=1
+[Command]
+Name="holdz"
+Command=/$z
+Time=1
+[Command]
+Name="fwd"
+Command=F
+Time=1
+[Command]
+Name="back"
+Command=B
+Time=1
+[Command]
+Name="up"
+Command=U
+Time=1
+[Command]
+Name="down"
+Command=D
+Time=1
+[Command]
+Name="up2"
+Command=$U
+Time=1
+[Command]
+Name="down2"
+Command=$D
+Time=1
+[Command]
+Name="fwd2"
+Command=$F
+Time=1
+[Command]
+Name="back2"
+Command=$B
+Time=1
+[Statedef -1]
+[State ]
+type=Null
+trigger1=0
+
+
+
+
+[Statedef -2]
+
+[State -2, Obtain MUGEN Version]
+type = Null
+trigger1 = var(2) := var(1740440064) || 1 ;; get version
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Remove Active Pauses]
+type = Pause
+trigger1 = 1
+time = 0
+movetime = 0
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Remove Active SuperPauses]
+type = SuperPause
+trigger1 = 1
+time = 0
+movetime = 0
+darken = 0
+anim = -1
+sound = -1
+ignorehitpause = 1
+persistent = 256
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; MUGEN 1.1 SETUP
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[State -2, Obtain Pause Time]
+type = Null
+triggerall = !NumPartner
+triggerall = var(2) != 0 ;; MUGEN 1.1
+trigger1 = var(-829) := 99999999 || 1 ;; grant pause move time
+trigger1 = var(-828) := 99999999 || 1 ;; grant superpause move time
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Remove Active Pauses]
+type = Null
+triggerall = !NumPartner
+triggerall = var(2) != 0 ;; MUGEN 1.1
+trigger1 = var(var(5259496)+75512) := 0 || 1 ;; remove global pausetime
+trigger1 = var(var(5259496)+75548) := 0 || 1 ;; remove global superpausetime
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Obtain My Address No Team]
+type = Null
+triggerall = !NumPartner
+triggerall = var(2) != 0 ;; MUGEN 1.1
+trigger1 = var(10) := var(var(5259496)+74356+4*TeamSide) || 1 ;; get my addr
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Obtain My Address With Team]
+type = Null
+triggerall = NumPartner
+triggerall = var(2) != 0 ;; MUGEN 1.1
+trigger1 = partner,ID > ID
+trigger1 = var(10) := var(var(5259496)+74356+4*TeamSide) || 1 ;; get my addr
+trigger2 = partner,ID < ID
+trigger2 = var(10) := var(var(5259496)+74364+4*TeamSide) || 1 ;; get my addr
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Obtain Enemy Addresses]
+type = Null
+triggerall = var(2) != 0 ;; MUGEN 1.1
+trigger1 = var(11) := var(var(5259496)+74364-4*(TeamSide-1)) || 1 ;; get enemy addr
+trigger1 = var(12) := var(var(5259496)+74372-4*(TeamSide-1)) || 1 ;; get enemy partner addr
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Set Enemies Normal Helper And Custom State]
+type = Null
+triggerall = var(2) != 0 ;; MUGEN 1.1
+triggerall = (var(3) := var(var(10) + 8)) || 1 ;; read my player index
+triggerall = (var(4) := var(var(var(10)) + 1068)) || 1 ;; read my state code addr
+trigger1 = var(11) != 0 ;; enemy 1
+trigger1 = (var(var(11) + 28) := 1) || 1 ;; set IsHelper
+trigger1 = (var(var(11) + 5708) := var(11)) || 1 ;; set ParentAddr
+trigger1 = (var(var(11) + 5712) := var(11)) || 1 ;; set RootAddr
+trigger1 = (var(var(11) + 5716) := 0) || 1 ;; set HelperType
+trigger1 = var(var(11) + 3256) := var(3)  ;; state owner 1
+trigger1 = var(var(11) + 3272) := var(3)  ;; state owner 2
+trigger1 = var(var(11) + 3276) := 11223344 ;; state number
+trigger1 = var(var(11) + 3260) := var(4)  ;; state code pointer
+trigger1 = var(var(11) + 3264) := var(var(10)) + 1052 ;; state code pointer 2
+trigger1 = 0 ;; drop to enemy 2
+trigger2 = var(12) != 0 ;; enemy 2
+trigger2 = (var(var(12) + 28) := 1) || 1 ;; set IsHelper
+trigger2 = (var(var(12) + 5708) := var(12)) || 1 ;; set ParentAddr
+trigger2 = (var(var(12) + 5712) := var(12)) || 1 ;; set RootAddr
+trigger2 = (var(var(12) + 5716) := 0) || 1 ;; set HelperType
+trigger2 = var(var(12) + 3256) := var(3)  ;; state owner 1
+trigger2 = var(var(12) + 3272) := var(3)  ;; state owner 2
+trigger2 = var(var(12) + 3276) := 11223344 ;; state number
+trigger2 = var(var(12) + 3260) := var(4)  ;; state code pointer
+trigger2 = var(var(12) + 3264) := var(var(10)) + 1052 ;; state code pointer 2
+ignorehitpause = 1
+persistent = 256
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; MUGEN 1.0 SETUP
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[State -2, Obtain Pause Time]
+type = Null
+triggerall = var(2) = 0 ;; MUGEN 1.0
+trigger1 = var(-797) := 99999999 || 1 ;; grant pause move time
+trigger1 = var(-796) := 99999999 || 1 ;; grant superpause move time
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Obtain My Address No Team]
+type = Null
+triggerall = !NumPartner
+triggerall = var(2) = 0 ;; MUGEN 1.0
+trigger1 = var(10) := var(var(5420044)+70192+4*TeamSide) || 1 ;; get my addr
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Obtain My Address With Team]
+type = Null
+triggerall = NumPartner
+triggerall = var(2) = 0 ;; MUGEN 1.0
+trigger1 = partner,ID > ID
+trigger1 = var(10) := var(var(5420044)+70192+4*TeamSide) || 1 ;; get my addr
+trigger2 = partner,ID < ID
+trigger2 = var(10) := var(var(5420044)+70200+4*TeamSide) || 1 ;; get my addr
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Obtain Enemy Addresses]
+type = Null
+triggerall = var(2) = 0 ;; MUGEN 1.0
+trigger1 = var(11) := var(var(5420044)+70200-4*(TeamSide-1)) || 1 ;; get enemy addr
+trigger1 = var(12) := var(var(5420044)+70208-4*(TeamSide-1)) || 1 ;; get enemy partner addr
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Set Enemies Normal Helper And Custom State]
+type = Null
+triggerall = var(2) = 0 ;; MUGEN 1.0
+triggerall = (var(3) := var(var(10) + 8)) || 1 ;; read my player index
+triggerall = (var(4) := var(var(var(10)) + 1072)) || 1 ;; read my state code addr
+trigger1 = var(11) != 0 ;; enemy 1
+trigger1 = (var(var(11) + 28) := 1) || 1 ;; set IsHelper
+trigger1 = (var(var(11) + 5244) := var(11)) || 1 ;; set ParentAddr
+trigger1 = (var(var(11) + 5248) := var(11)) || 1 ;; set RootAddr
+trigger1 = (var(var(11) + 5252) := 0) || 1 ;; set HelperType
+trigger1 = var(var(11) + 3128) := var(3)  ;; state owner 1
+trigger1 = var(var(11) + 3144) := var(3)  ;; state owner 2
+trigger1 = var(var(11) + 3148) := 11223344 ;; state number
+trigger1 = var(var(11) + 3132) := var(4)  ;; state code pointer
+trigger1 = var(var(11) + 3136) := var(var(10)) + 1056 ;; state code pointer 2
+trigger1 = 0 ;; drop to enemy 2
+trigger2 = var(12) != 0 ;; enemy 2
+trigger2 = (var(var(12) + 28) := 1) || 1 ;; set IsHelper
+trigger2 = (var(var(12) + 5244) := var(12)) || 1 ;; set ParentAddr
+trigger2 = (var(var(12) + 5248) := var(12)) || 1 ;; set RootAddr
+trigger2 = (var(var(12) + 5252) := 0) || 1 ;; set HelperType
+trigger2 = var(var(12) + 3128) := var(3)  ;; state owner 1
+trigger2 = var(var(12) + 3144) := var(3)  ;; state owner 2
+trigger2 = var(var(12) + 3148) := 11223344 ;; state number
+trigger2 = var(var(12) + 3132) := var(4)  ;; state code pointer
+trigger2 = var(var(12) + 3136) := var(var(10)) + 1056 ;; state code pointer 2
+ignorehitpause = 1
+persistent = 256
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; COMMON SETUP
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+[State -2, ScreenBound]
+type = ScreenBound
+trigger1 = 1
+value = 0
+movecamera = 0,1
+ignorehitpause = 1
+persistent = 256
+
+[State -2, PlayerPush]
+type = PlayerPush
+trigger1 = 1
+value = 0
+ignorehitpause = 1
+persistent = 256
+
+[State -2, No Auto Turn]
+type = AssertSpecial
+trigger1 = 1
+flag = NoAutoTurn
+flag2 = NoKOSlow
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Clean BG]
+type = AssertSpecial
+trigger1 = 1
+flag = NoBG
+flag2 = NoFG
+flag3 = NoBarDisplay
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Turn]
+type = Turn
+trigger1 = Facing != 1
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Debug]
+type = DisplayToClipboard
+trigger1 = 1
+text = "ME=%d E=%d E2=%d KO-Time=%d mugenversion=%d"
+params = var(10), var(11), var(12), sysvar(1), var(2)
+ignorehitpause = 1
+persistent = 256
+
+[State -2, Erase Helpers]
+type = SelfState
+trigger1 = (var(1) := 4) || 1
+value = 11223343
+ignorehitpause = 1
+persistent = 256
