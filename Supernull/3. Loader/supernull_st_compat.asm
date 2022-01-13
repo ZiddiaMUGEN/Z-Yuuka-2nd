@@ -37,9 +37,11 @@ xor eax,eax
 mov ebx,esp
 
 ;; Version Differentiation between 1.1A/1.1B and 1.0
-cmp byte [0x00511094],0x31  ;; 0x31 == 1.1
-jne .path10
-cmp byte [0x005110A8],0x34 ;; 0x34 == 1.1a4
+mov ecx,0xFFBBC43A
+not ecx
+cmp byte [ecx],0xBE  ;; 0xBE == 1.0
+je .path10
+cmp byte [ecx],0x5F ;; 0x5F == 1.1a4
 je .store11a4
 mov byte [PTR_VERSION_FLAG],0x02 ;; store version as 1.1b1
 jmp .path11
